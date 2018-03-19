@@ -1,7 +1,7 @@
 package io.saikou9901.LuceneSample;
 
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+import org.apache.lucene.analysis.ja.JapaneseAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.TextField;
@@ -10,9 +10,7 @@ import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.search.IndexSearcher;
-import org.apache.lucene.search.Query;
-import org.apache.lucene.search.ScoreDoc;
+import org.apache.lucene.search.*;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.RAMDirectory;
 import org.springframework.stereotype.Service;
@@ -22,15 +20,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class LuceneService {
+public class LuceneService  {
 
     private Analyzer analyzer;
     private Directory directory;
     private IndexWriterConfig config;
 
     public LuceneService() {
-        analyzer = new StandardAnalyzer();
         directory = new RAMDirectory();
+        //analyzer = new StandardAnalyzer();
+        analyzer = new JapaneseAnalyzer();
         config = new IndexWriterConfig(analyzer);
     }
 
@@ -59,9 +58,10 @@ public class LuceneService {
         DirectoryReader ireader = DirectoryReader.open(directory);
         IndexSearcher isearcher = new IndexSearcher(ireader);
 
-        QueryParser parser = new QueryParser(FIELD_VALUE, analyzer);
-        Query query = parser.parse(keyword);
+        // クエリの組み立て
+        Query query = structQuery(keyword);
 
+        // 検索実行
         ScoreDoc[] hits = isearcher.search(query, 1000).scoreDocs;
         List<DocumentDto> result = new ArrayList();
 
@@ -77,6 +77,29 @@ public class LuceneService {
         ireader.close();
 
         return result;
+    }
+
+    private Query structQuery(String keyword) throws ParseException {
+
+        // 複数フィールドに対して検索するには、フィールド毎に生成したQueryをBooleanQueryに集める
+        BooleanQuery.Builder container = new BooleanQuery.Builder();
+
+        QueryParser parser;
+        Query query;
+
+        // Nameに対するQuery
+        parser = new QueryParser(FIELD_NAME, analyzer);
+        query = parser.parse(keyword);
+        System.out.println("Query for Name => " + query.toString());
+        container.add(query, BooleanClause.Occur.SHOULD);
+
+        // Valueに対するQuery
+        parser = new QueryParser(FIELD_VALUE, analyzer);
+        query = parser.parse(keyword);
+        System.out.println("Query for Value => " + query.toString());
+        container.add(query, BooleanClause.Occur.SHOULD);
+
+        return container.build();
     }
 
 }
