@@ -75,6 +75,7 @@ public class LuceneService  {
         for (int i = 0; i < hits.length; i++) {
             Document hitDoc = isearcher.doc(hits[i].doc);
             result.add(new DocumentDto(
+                    hits[i].doc,
                     hitDoc.getField(FIELD_NAME).stringValue(),
                     hitDoc.getField(FIELD_VALUE).stringValue()
                 ));
@@ -124,6 +125,7 @@ public class LuceneService  {
         for (int i = 0; i < hits.length; i++) {
             Document hitDoc = isearcher.doc(hits[i].doc);
             result.add(new DocumentDto(
+                    hits[i].doc,
                     hitDoc.getField(FIELD_NAME).stringValue(),
                     hitDoc.getField(FIELD_VALUE).stringValue()
             ));

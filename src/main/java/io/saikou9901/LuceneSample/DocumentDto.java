@@ -1,6 +1,16 @@
 package io.saikou9901.LuceneSample;
 
 public class DocumentDto {
+    private int documentId;
+
+    public int getDocumentId() {
+        return documentId;
+    }
+
+    public void setDocumentId(int documentId) {
+        this.documentId = documentId;
+    }
+
     private String name;
 
     public String getName() {
@@ -21,7 +31,8 @@ public class DocumentDto {
         this.value = value;
     }
 
-    public DocumentDto(String name, String value) {
+    public DocumentDto(int documentId, String name, String value) {
+        this.documentId = documentId;
         this.name = name;
         this.value = value;
     }
