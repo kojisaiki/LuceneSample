@@ -23,4 +23,9 @@ public class LuceneResource {
     private ResponseEntity<List<DocumentDto>> search(@RequestParam String keyword) throws Exception {
         return ResponseEntity.ok().body(luceneService.read(keyword));
     }
+
+    @GetMapping("/lucene/_all")
+    private ResponseEntity<List<DocumentDto>> getAll() throws Exception {
+        return ResponseEntity.ok().body(luceneService.readAll());
+    }
 }
