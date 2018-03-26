@@ -1,6 +1,19 @@
 package io.saikou9901.LuceneSample;
 
+import java.util.UUID;
+
 public class DocumentDto {
+
+    private UUID id;
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     private int documentId;
 
     public int getDocumentId() {
@@ -31,7 +44,14 @@ public class DocumentDto {
         this.value = value;
     }
 
-    public DocumentDto(int documentId, String name, String value) {
+    public DocumentDto(UUID id, String name, String value) {
+        this.id = id;
+        this.name = name;
+        this.value = value;
+    }
+
+    public DocumentDto(UUID id, int documentId, String name, String value) {
+        this.id = id;
         this.documentId = documentId;
         this.name = name;
         this.value = value;

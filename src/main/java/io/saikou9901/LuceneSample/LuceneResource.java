@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -14,9 +15,25 @@ public class LuceneResource {
     private LuceneService luceneService;
 
     @PostMapping("/lucene")
-    private ResponseEntity<DocumentDto> write(@RequestBody DocumentDto document) throws Exception {
-        luceneService.writeData(document);
-        return ResponseEntity.ok().body(document);
+    private ResponseEntity<DocumentDto> regist(@RequestParam String name, @RequestParam String value) throws Exception {
+        DocumentDto newdata = new DocumentDto(
+                UUID.randomUUID(),
+                name,
+                value
+        );
+        luceneService.regist(newdata);
+        return ResponseEntity.ok().body(newdata);
+    }
+
+    @PutMapping("/lucene")
+    private ResponseEntity<DocumentDto> update(@RequestParam String id, @RequestParam String name, @RequestParam String value) throws Exception {
+        DocumentDto newdata = new DocumentDto(
+                UUID.fromString(id),
+                name,
+                value
+        );
+        luceneService.update(newdata);
+        return ResponseEntity.ok().body(newdata);
     }
 
     @GetMapping("/lucene/_search")
